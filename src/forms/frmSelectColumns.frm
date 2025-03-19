@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSelectColumns 
    Caption         =   "Select columns"
-   ClientHeight    =   11820
-   ClientLeft      =   40
-   ClientTop       =   170
-   ClientWidth     =   3400
+   ClientHeight    =   7180
+   ClientLeft      =   -490
+   ClientTop       =   -1930
+   ClientWidth     =   5220
    OleObjectBlob   =   "frmSelectColumns.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -14,6 +14,11 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private Sub UserForm_Initialize()
+
+    ' Set fixed dimensions for the UserForm
+    Me.Width = 400 ' Replace with your desired width in points
+    Me.Height = 600 ' Replace with your desired height in points
+      
     ' Populate checkboxes dynamically with column options from the dictionary
     PopulateControls
 End Sub
@@ -26,7 +31,7 @@ End Sub
 Private Sub PopulateControls()
     ' Clear existing controls first to avoid duplicates
     ClearControls
-    
+
     ' Populate checkboxes dynamically with column options from the dictionary
     Dim dictSheet As Worksheet
     Set dictSheet = ThisWorkbook.Sheets("Dictionary")
@@ -35,7 +40,7 @@ Private Sub PopulateControls()
     Dim topPos As Integer
     Dim chkBox As MSForms.CheckBox
     Dim lblSection As MSForms.label
-    Dim frame As MSForms.frame
+    Dim Frame As MSForms.Frame
     Dim currentSection As String
     Dim maxWidth As Integer
     Dim tbl As ListObject
@@ -57,31 +62,33 @@ Private Sub PopulateControls()
     End With
 
     ' Add a Frame control to the UserForm
-    Set frame = Me.Controls.Add("Forms.Frame.1", "frame", True)
-    With frame
+    Set Frame = Me.Controls.Add("Forms.Frame.1", "frame", True)
+    With Frame
         .Top = lblSection.Top + lblSection.Height + 5
         .Left = 10
         .Width = Me.Width - 80 ' Adjust width to use more form space
         .Height = Me.Height - .Top - 40 ' Adjust height to fit the form and add space at the bottom
         .ScrollBars = fmScrollBarsVertical ' Enable vertical scroll bar
+        .ScrollHeight = topPos + 30
     End With
+
 
     topPos = 10 ' Initial top position inside the Frame
 
     ' Calculate the maximum width for checkboxes
-    maxWidth = frame.Width - 20
+    maxWidth = Frame.Width - 20
 
     ' Get the table from the current sheet
     Set tbl = ThisWorkbook.Sheets(currentSection).ListObjects(1)
 
     ' Create checkboxes for the appropriate section
-    For Each cell In dictSheet.Range("A2:A" & dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).Row)
+    For Each cell In dictSheet.Range("A2:A" & dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).row)
         'If cell.Value = currentSection And Not (cell.Offset(0, 2).Value Like "*_ID*" Or cell.Offset(0, 2).Value Like "*_lev*" Or cell.Offset(0, 2).Value Like "*_identifier*" Or cell.Offset(0, 2).Value Like "*_name") Then
         If cell.Value = currentSection And cell.Offset(0, 1) <> -99 Then
             Set scoreCell = cell.Offset(0, dictSheet.Rows(1).Find("score").Column - cell.Column)
             score = scoreCell.Value
             If score <> "S" Then
-                Set chkBox = frame.Controls.Add("Forms.CheckBox.1", "chk" & cell.Offset(0, 2).Value, True)
+                Set chkBox = Frame.Controls.Add("Forms.CheckBox.1", "chk" & cell.Offset(0, 2).Value, True)
                 With chkBox
                     .Caption = cell.Offset(0, 3).Value
                     .Top = topPos
@@ -105,13 +112,13 @@ Private Sub PopulateControls()
     requiredHeight = topPos + 20
 
     ' Adjust the Frame ScrollHeight to fit all checkboxes and add space at the bottom
-    frame.ScrollHeight = requiredHeight
-    
+    Frame.ScrollHeight = requiredHeight
+
     ' Enable scrollbars only if required height exceeds frame height
-    If requiredHeight > frame.Height Then
-        frame.ScrollBars = fmScrollBarsVertical
+    If requiredHeight > Frame.Height Then
+        Frame.ScrollBars = fmScrollBarsVertical
     Else
-        frame.ScrollBars = fmScrollBarsNone
+        Frame.ScrollBars = fmScrollBarsNone
     End If
 End Sub
 
