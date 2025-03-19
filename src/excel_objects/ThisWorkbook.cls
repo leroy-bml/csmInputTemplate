@@ -8,15 +8,56 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Private Sub Workbook_SheetActivate(ByVal Sh As Object)
-    If frmSelectColumns.Visible Then
-        frmSelectColumns.Hide
-        frmSelectColumns.Show
+    On Error Resume Next ' Prevent errors if the form isn't loaded
+
+    ' Check if the form exists and is visible
+    If VBA.UserForms.Count > 0 Then
+        Dim frm As Object
+        For Each frm In VBA.UserForms
+            If frm.Name = "frmSelectColumns" Then
+                If frm.Visible Then
+                    frm.Hide
+                    frm.Show
+                End If
+                Exit For
+            End If
+        Next frm
     End If
+
+    On Error GoTo 0 ' Turn error handling back on
 End Sub
+
 
 Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Target As Range)
     On Error GoTo ErrorHandler
+'    Dim ws As Worksheet
+'    Dim checkRange As Range
+'    Dim cell As Range
     Dim LO As Object
+
+'    ' Loop through all sheets whose names start with "ddl"
+'    For Each ws In ThisWorkbook.Worksheets
+'        If Left(ws.Name, 3) = "ddl" Then ' Check if the sheet name starts with "ddl"
+'            Set checkRange = Intersect(Target, ws.Columns("A")) ' Monitor changes in column A of the sheet
+'
+'            If Not checkRange Is Nothing Then
+'                Application.EnableEvents = False ' Prevent infinite loops
+'                For Each cell In checkRange
+'                    If cell.Value <> "" Then ' If column A has data
+'                        ' Clear any previous spilled array results in column B and adjacent cells
+'                        cell.Offset(0, 1).Resize(, 10).ClearContents ' Adjust '10' to the maximum expected spill range
+'
+'                        ' Apply the dynamic array formula
+'                        cell.Offset(0, 1).Formula2 = "=TRANSPOSE(SORT(FILTER(tillage[tillage_level]&"" | ""&tillage[tillage_treatment_name],tillage[experiment_ID]=" & cell.Address & ")))"
+'                    Else
+'                        ' Clear contents if column A is empty
+'                        cell.Offset(0, 1).Resize(, 10).ClearContents ' Adjust '10' to the expected spill range
+'                    End If
+'                Next cell
+'                Application.EnableEvents = True ' Re-enable events
+'            End If
+'        End If
+'    Next ws
 
     ' Ensure the worksheet contains a table object
     If Sh.ListObjects.Count = 0 Then
@@ -160,4 +201,59 @@ End Sub
 '    MsgBox "Error " & Err.Number & ": " & Err.Description, vbExclamation
 '    Application.EnableEvents = True
 'End Sub
+
+'Private Sub Workbook_SheetCalculate(ByVal Sh As Object)
+'    Dim ws As Worksheet
+'    Dim spillStart As Range
+'    Dim spillRange As Range
+'    Dim cell As Range
+'
+'    ' Loop through all sheets whose names start with "ddl"
+'    For Each ws In ThisWorkbook.Worksheets
+'        If Left(ws.Name, 3) = "ddl" Then ' Check if the sheet name starts with "ddl"
+'
+'            ' Define the dynamic array starting point (A2)
+'            Set spillStart = ws.Range("A2") ' Adjust this if your array starts elsewhere
+'
+'            ' Dynamically detect the spill range
+'            On Error Resume Next
+'            If spillStart.Formula2 <> "" Then
+'                Set spillRange = spillStart.Resize(ws.Range(spillStart.Address).End(xlDown).Row - spillStart.Row + 1)
+'            Else
+'                Set spillRange = Nothing ' No dynamic array detected
+'            End If
+'            On Error GoTo 0
+'
+'            ' Process the detected spill range
+'            If Not spillRange Is Nothing Then
+'                Application.EnableEvents = False ' Prevent infinite loops
+'
+'                For Each cell In spillRange
+'                    If Not IsError(cell.Value) And cell.Value <> "" Then ' Ensure valid data
+'                        ' Clear any previous spill results in column B
+'                        cell.Offset(0, 1).Resize(, 120).ClearContents ' Adjust '10' for max spill size
+'                        cell.Offset(0, 120).Resize(, 120).ClearContents
+'
+'                        ' Apply the dynamic row-wise formula in column B
+'                        cell.Offset(0, 1).Formula2 = "=TRANSPOSE(SORT(FILTER(tillage[tillage_level]&"" | ""&tillage[tillage_treatment_name],tillage[experiment_ID]=" & cell.Address & ")))"
+'                        cell.Offset(0, 120).Formula2 = "=TRANSPOSE(SORT(FILTER(tillage[tillage_level],tillage[experiment_ID]=" & cell.Address & ")))"
+'                    Else
+'                        ' Clear column B if column A is empty or contains an error
+'                        cell.Offset(0, 1).Resize(, 10).ClearContents ' Adjust '10' for max spill size
+'                        cell.Offset(0, 120).Resize(, 120).ClearContents
+'
+'                    End If
+'                Next cell
+'
+'                Application.EnableEvents = True ' Re-enable events
+'            End If
+'        End If
+'    Next ws
+'End Sub
+
+
+
+
+
+
 

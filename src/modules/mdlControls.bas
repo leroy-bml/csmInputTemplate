@@ -5,7 +5,7 @@ Sub GoToFirstSheet()
 End Sub
 
 Sub GoToNextSheet()
-    
+
     Dim currentSheet As Worksheet
     Set currentSheet = ActiveSheet
 
@@ -17,7 +17,7 @@ Sub GoToNextSheet()
 End Sub
 
 Sub GoToPreviousSheet()
-    
+
     Dim currentSheet As Worksheet
     Set currentSheet = ActiveSheet
 
@@ -47,4 +47,3 @@ Sub BulkResizeColumns()
         .VerticalAlignment = xlTop
     End With
 End Sub
-

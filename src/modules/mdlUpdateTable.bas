@@ -143,7 +143,7 @@ Sub UpdateTable(sheetName As String)
     Next cell
 
     ' Filter the dictionary sheet to only include rows for the current sheet
-    lastRow = dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).Row
+    lastRow = dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).row
     Set dictRange = dictSheet.Range("A1:D" & lastRow)
     dictRange.AutoFilter Field:=1, Criteria1:=sheetName
     Set filteredRange = dictSheet.Range("C2:D" & lastRow).SpecialCells(xlCellTypeVisible)
@@ -185,7 +185,7 @@ Sub UpdateTable(sheetName As String)
         Next col
         
         If Not isMatch Then
-            Set lblRange = ws.Cells(tbl.HeaderRowRange.Row - 1, tbl.ListColumns(i).Range.Column)
+            Set lblRange = ws.Cells(tbl.HeaderRowRange.row - 1, tbl.ListColumns(i).Range.Column)
             lblRange.ClearContents
             tbl.ListColumns(i).Delete
             Debug.Print "Deleted Column: " & colName
@@ -214,8 +214,11 @@ SkipDeletion:
             Debug.Print "Column Already Exists, Preserved: " & colName
         End If
         Set headerRange = tbl.HeaderRowRange
-        ws.Cells(headerRange.Row - 1, headerRange.Cells(1, tbl.ListColumns(colName).Index).Column).Value = colLabel
+        ws.Cells(headerRange.row - 1, headerRange.Cells(1, tbl.ListColumns(colName).Index).Column).Value = colLabel
     Next i
+    
+    ' Call SetUpDataValidation to apply data validation
+    SetUpDataValidation ws
 
     ' Re-enable events
     Application.EnableEvents = True
