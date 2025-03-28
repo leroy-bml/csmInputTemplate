@@ -165,82 +165,6 @@ Sub ApplyColumnFormats(tbl As ListObject, dict As Object)
     Next col
 End Sub
 
-
-'Sub SetUpDataValidation(targetSheet As Worksheet)
-'    Dim ws As Worksheet
-'    Dim dropDownSheet As Worksheet
-'    Dim tbl As ListObject
-'    Dim dictSheet As Worksheet
-'    Dim dict As Object
-'    Dim col As ListColumn
-'    Dim headerName As String
-'    Dim cell As Range
-'    Dim score As String
-'    Dim validationInfo As Variant
-'    Dim validationRangeName As String
-'    Dim validationType As String
-'    Dim formatType As String
-'
-'    ' Define the worksheets and table
-'    Set ws = ActiveSheet
-'    Set dropDownSheet = ThisWorkbook.Sheets("DropDown")
-'
-'    If ws.ListObjects.Count > 0 Then
-'        Set tbl = ws.ListObjects(1)
-'    Else
-'        MsgBox "No tables found in the active sheet.", vbExclamation
-'        Exit Sub
-'    End If
-'
-'    Set dictSheet = ThisWorkbook.Sheets("Dictionary")
-'
-'    ' Get the dictionary of header names and validation ranges from the sheet
-'    Set dict = GetValidationDictionaryFromSheet(dictSheet, targetSheet)
-'
-'    ' Loop through all columns in the table and apply data validation
-'    For Each col In tbl.ListColumns
-'        headerName = col.Name
-'        If dict.exists(headerName) Then
-'            ' Retrieve the validation information
-'            validationInfo = dict(headerName)
-'            ' Assign the array elements to individual variables
-'            validationRangeName = validationInfo(0) '<-- First element (validation range name)
-'            validationType = validationInfo(1)     '<-- Second element (validation type)
-'            formatType = validationInfo(2)         '<-- Third element (format type)
-'
-'            ' Apply data validation
-'            If validationRangeName = "none" Then
-'                ' Explicitly clear validation for columns with "none"
-'                col.DataBodyRange.Validation.Delete
-'            Else
-'                ' Apply data validation
-'                ApplyDataValidation tbl, headerName, validationRangeName, validationType, dropDownSheet
-'            End If
-'
-'    ' Apply column formats
-'    ApplyColumnFormats tbl, dict
-'
-'        Else
-'            Set cell = dictSheet.Range("C1").EntireColumn.Find(headerName)
-'            If Not cell Is Nothing Then
-'                score = cell.Offset(0, dictSheet.Rows(1).Find("score").Column - cell.Column).Value
-'                If score <> "S" Then
-'                    ' Column not found in the dictionary AND not an ID, set data validation to "Any value"
-'                    With col.DataBodyRange.Validation
-'                        .Delete ' Remove existing validation
-'                        .Add Type:=xlValidateInputOnly, AlertStyle:=xlValidAlertStop
-'                        .IgnoreBlank = True
-'                        .InCellDropdown = False
-'                        .ShowInput = True
-'                        .ShowError = True
-'                    End With
-'                End If
-'            End If
-'        End If
-'    Next col
-'End Sub
-
-
 Sub SetUpDataValidation(targetSheet As Worksheet)
     Dim ws As Worksheet
     Dim dropDownSheet As Worksheet
@@ -250,7 +174,7 @@ Sub SetUpDataValidation(targetSheet As Worksheet)
     Dim col As ListColumn
     Dim headerName As String
     Dim cell As Range
-    Dim score As String
+    Dim colType As String
     Dim validationInfo As Variant
     Dim validationRangeName As String
     Dim validationType As String
@@ -284,11 +208,11 @@ Sub SetUpDataValidation(targetSheet As Worksheet)
             validationType = validationInfo(1)     '<-- Second element (validation type)
             formatType = validationInfo(2)         '<-- Third element (format type)
             
-            ' Check if column is a structural variable (score = "S")
+            ' Check if column is a structural variable (colType = "fixed")
             Set cell = dictSheet.Range("C1").EntireColumn.Find(headerName)
             If Not cell Is Nothing Then
-                score = cell.Offset(0, dictSheet.Rows(1).Find("score").Column - cell.Column).Value
-                If score = "S" Then
+                colType = cell.Offset(0, dictSheet.Rows(1).Find("column_type").Column - cell.Column).Value
+                If colType = "fixed" Then
                     ' Structural variable: Skip modification of validation
                     Debug.Print "Skipping validation changes for structural variable: " & headerName
                     ApplyColumnFormats tbl, dict

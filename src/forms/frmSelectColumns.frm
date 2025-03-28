@@ -2,8 +2,8 @@ VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSelectColumns 
    Caption         =   "Select columns"
    ClientHeight    =   7180
-   ClientLeft      =   -490
-   ClientTop       =   -1930
+   ClientLeft      =   -495
+   ClientTop       =   -1935
    ClientWidth     =   5220
    OleObjectBlob   =   "frmSelectColumns.frx":0000
    StartUpPosition =   1  'CenterOwner
@@ -44,8 +44,8 @@ Private Sub PopulateControls()
     Dim currentSection As String
     Dim maxWidth As Integer
     Dim tbl As ListObject
-    Dim score As String
-    Dim scoreCell As Range
+    Dim colType As String
+    Dim colTypeCell As Range
 
     ' Determine the current sheet name
     currentSection = Application.ActiveSheet.Name
@@ -85,9 +85,9 @@ Private Sub PopulateControls()
     For Each cell In dictSheet.Range("A2:A" & dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).row)
         'If cell.Value = currentSection And Not (cell.Offset(0, 2).Value Like "*_ID*" Or cell.Offset(0, 2).Value Like "*_lev*" Or cell.Offset(0, 2).Value Like "*_identifier*" Or cell.Offset(0, 2).Value Like "*_name") Then
         If cell.Value = currentSection And cell.Offset(0, 1) <> -99 Then
-            Set scoreCell = cell.Offset(0, dictSheet.Rows(1).Find("score").Column - cell.Column)
-            score = scoreCell.Value
-            If score <> "S" Then
+            Set colTypeCell = cell.Offset(0, dictSheet.Rows(1).Find("column_type").Column - cell.Column)
+            colType = colTypeCell.Value
+            If colType <> "fixed" Then
                 Set chkBox = Frame.Controls.Add("Forms.CheckBox.1", "chk" & cell.Offset(0, 2).Value, True)
                 With chkBox
                     .Caption = cell.Offset(0, 3).Value
