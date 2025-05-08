@@ -1,0 +1,64 @@
+Experimental Design Summary
+
+missed data: 
+location:(latitude, longitude, elevation),
+
+fertilization:(total fertilizer applied, N amount, Nitrate in applied fertilizer, Ammonium in applied fertilizer, Urea in applied fertilizer),
+
+initial condition:(initial water content, initial stable organic carbon, previous crop, residue incorporated, residue incorporation depth, weight aboveground residues, moisture in aboveground residues, N in aboveground residues)
+
+weather:(temperature, dewpoint temperature, rainfall, solar radiation, ozone concentration, wind speed, weather station reference height)
+
+Treatments:
+7 plant density levels were applied: 5, 25, 50, 100, 200, 400, and 800 plants/m².
+
+Irrigation:
+Rainfed conditions (no supplementary irrigation).
+
+Fertilization:
+No mineral deficiency reported; no detailed fertilizer application data provided.
+
+Chemical Treatments:
+No disease incidence was observed; chemical usage not specified.
+
+Field Location:
+No exact description of the field location. The experiment is assumed to have taken place in Lelystad, Netherlands. However, the available weather data is from a station located approximately 100 km from Lelystad.
+
+Weather Data
+Weather information was obtained from literature and includes values recorded every six days for the following parameters:
+
+Precipitation (mm)
+
+Temperature (°C)
+
+Solar radiation (J/cm²/day)
+
+
+
+Measured Variables / Results（all recorded in extra table)
+
+Grain yield
+
+Total aboveground yield
+
+Grain weight
+
+Harvest index
+
+Number of tillers per m²
+
+Number of shoots per m²
+
+Number of ears per m²
+
+Tiller survival rate
+
+Number of ears per plant
+
+Number of spikelets per ear
+
+Number of grains per spikelet
+
+Number of grains per ear
+
+Number of spikelets per ear (duplicate entry – consider checking if one should be omitted or renamed)
