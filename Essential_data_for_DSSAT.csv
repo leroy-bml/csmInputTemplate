@@ -1,0 +1,80 @@
+﻿Sheet,var_order_custom,var_name,var_label_en,Code_Query,Description,Information,format,DSSAT_rank,Unit_or_type,section
+EVENT_SPECIFICATION,-99,mgmt_event_date,Event date (dd/mm/yyyy),EVDATE,Management operations event date,19/10/1976,date,2,date,MANAGEMENT
+FERTILIZER_APPLICS,5,fertilizer_material,Fertilizer material [select],FECD,Fertilizer material,No mineral deficiency (no detail),text,2,code,MANAGEMENT
+FERTILIZER_APPLICS,6,fertilizer_applic_method,Application method [select],FEACD,Fertilizer application method,No description,text,2,code,MANAGEMENT
+FERTILIZER_APPLICS,7,application_depth_fert,Application depth (cm),FEDEP,Fertilizer application depth,No description,numeric,2,cm,MANAGEMENT
+FERTILIZER_APPLICS,8,fertilizer_total_amount,Total fertilizer applied (kg/ha),FEAM,Total amount of fertilizer applied,No description,numeric,2,kg[fertilizer]/ha,MANAGEMENT
+FERTILIZER_APPLICS,9,N_in_applied_fertilizer,N amount (kg/ha),FEAMN,Nitrogen (elemental) in applied fertilizer,No description,numeric,2,kg[N]/ha,MANAGEMENT
+FERTILIZER_APPLICS,10,NO3_applied_fertilizer,Nitrate in applied fertilizer (kg[N]/ha),FENO3,"Nitrate in applied fertilizer, as elemental N",No description,numeric,2,kg[N]/ha,MANAGEMENT
+FERTILIZER_APPLICS,11,NH4_applied_fertilizer,Ammonium in applied fertilizer (kg[N]/ha),FENH4,"Ammonium in applied fertilizer, as elemental N",No description,numeric,2,kg[N]/ha,MANAGEMENT
+FERTILIZER_APPLICS,12,Urea_applied_fertilizer,Urea in applied fertilizer (kg[N]/ha),FEUREA,"Urea in applied fertilizer, as elemental N",No description,numeric,2,kg[N]/ha,MANAGEMENT
+FIELDS,10,field_latitude,Latitude (decimal degrees; default N),FL_LAT,Field latitude,"No description (maybe Research Station for Arable Farming and Field Production of Vegetables, Edelhertweg 1, Lelystad, the Netherlands)",numeric,2,decimal_degrees,MANAGEMENT
+FIELDS,11,field_longitude,Longitude (decimal degrees; default E),FL_LONG,"Field longitude, E positive, W negative","No description (maybe Research Station for Arable Farming and Field Production of Vegetables, Edelhertweg 1, Lelystad, the Netherlands)",numeric,2,decimal_degrees,MANAGEMENT
+FIELDS,12,field_elevation,Elevation (m),FLELE,Elevation of field site,No description,numeric,1,m,MANAGEMENT
+GENOTYPES,3,crop_ident_ICASA,Crop [select],CRID,Crop (or weed) species identifier,wheat,text,2,code,MANAGEMENT
+GENOTYPES,4,cultivar_identifier,Cultivar identifier,CUL_ID,"Cultivar, line or genotype identifier",winter wheat,text,1,code,MANAGEMENT
+GENOTYPES,5,cultivar_name,Cultivar name,CUL_NAME,Cultivar name,Lely,text,2,text,MANAGEMENT
+INITIAL_CONDITION_LAYER,6,initial_watr_conc_by_lyr,Initial water content (fraction),ICH2O,Initial water concentration by layer,No description,numeric,1,unitless,MANAGEMENT
+INITIAL_CONDITION_LAYER,12,initial_soil_stable_C,Initial stable organic carbon (%),ICSC,"Stable organic carbon by layer, expressed as g[C]/100g[soil]",No description,numeric,1,%,MANAGEMENT
+INITIAL_CONDITIONS,6,residue_nature_prev_crop,Previous crop [select],ICPCR,"Residue, crop code for previous crop",No description,text,1,code,MANAGEMENT
+INITIAL_CONDITIONS,7,residue_incorporated,Residue incorporated (%),ICRIP,Residue incorporation percentage,No description,numeric,1,%,MANAGEMENT
+INITIAL_CONDITIONS,8,residue_incorpor_depth,Residue incorporation depth (cm),ICRDP,Residue incorporation depth,No description,numeric,1,cm,MANAGEMENT
+INITIAL_CONDITIONS,9,residue_above_ground_wt,"Weight aboveground residues, dry matter (kg/ha)",ICRAG,"Residue above-ground weight, dry weight basis",No description,numeric,1,kg/ha,MANAGEMENT
+INITIAL_CONDITIONS,10,residue_moisture_init,Moisture in aboveground residues (%),ICRM,Moisture in initial above-ground residue ,No description,numeric,1,%,MANAGEMENT
+INITIAL_CONDITIONS,11,residue_N_conc,N in aboveground residues (%),ICRN,"Residue, above-ground, nitrogen concentration",No description,numeric,1,%,MANAGEMENT
+IRRIGATION_APPLICATIONS,5,irrigation_operation,Irrigation operation [select],IROP,"Irrigation operation (e.g., furrow, sprinkler, drip…)",Rainfalled (contained_monthly_precipitation),text,1,code,MANAGEMENT
+IRRIGATION_APPLICATIONS,6,irrig_amount_depth,Irrigation amount (mm),IRVAL,"Irrigation amount, depth of water",Rainfalled (contained_monthly_precipitation),numeric,2,mm,MANAGEMENT
+ORGANIC_MATERIAL_APPLICS,5,organic_material,Organic material [select],OMCD,"Organic material, identifying code",No addition,text,2,code,MANAGEMENT
+ORGANIC_MATERIAL_APPLICS,9,org_material_applic_amnt,"Applied amount, dry matter (kg/ha)",OMAMT,"Organic materials application amount, dry weight basis",No addition,numeric,2,kg/ha,MANAGEMENT
+ORGANIC_MATERIAL_APPLICS,9,org_material_applic_fresh_wt,"Applied amount, fresh matter (kg/ha)",OMFWT,"Organic materials application amount, fresh weight basis",No addition,numeric,2,kg/ha,MANAGEMENT
+ORGANIC_MATERIAL_APPLICS,12,organic_material_N_conc,N concentration (%),OMN%,Organic materials nitrogen concentration,No addition,numeric,1,%,MANAGEMENT
+ORGANIC_MATERIALS,4,org_material_applic_tot,Total seasonal amount (kg/ha),OM_TOT,"Total seasonal organic materials application amount, dry weight basis",No addition,numeric,2,kg/ha,MANAGEMENT
+PERSONS,11,persons_notes,Comments,PERSON_NOTES,Additional notes on persons involved with the experiment(s),No note,text,1,text,METADATA
+PLANTINGS,4,planting_date,Planting date (dd/mm/yyyy),PDATE,Planting or sowing date,19/10/1976,date,2,date,MANAGEMENT
+PLANTINGS,5,transplant_date,Transplant date (dd/mm/yyyy),TRDATE,Transplant date,No transplant,date,2,date,MANAGEMENT
+PLANTINGS,8,plant_pop_at_planting,Planting density (#/m2),PLPOP,Plant population at planting,"5, 25, 50, 100, 200, 400, 800 plants per m2",numeric,2,number/m2,MANAGEMENT
+PLANTINGS,9,plant_pop_at_emergence,Plant density at emergence (#/m2),PLPOE,Plant population at emergence,contained,numeric,1,number/m2,MANAGEMENT
+SOIL_ANALYSES_LAYERS,10,soil_stable_C,Stable organic C (%),SASC,Stable organic carbon by layer expressed as g[C]/100g[soil],No description,numeric,1,%,MANAGEMENT
+SOIL_METADATA,8,latitude_soil_profile,Latitude (decimal degrees; default N),SOIL_LAT,Latitude of soil profile site,No description,numeric,1,decimal_degrees,SOIL
+SOIL_METADATA,9,longitude_soil_profile,Longitude (decimal degrees; default E),SOIL_LONG,Longitude of soil profile site,No description,numeric,1,decimal_degrees,SOIL
+SOIL_METADATA,10,soil_site_elevation,Elevation (m),SOIL_ELEV,Elevation of soil profile site,No description,numeric,1,m,SOIL
+SOIL_METADATA,13,soil_profile_slope,Slope (%),SL_SLOPE,Slope where soil profile characterized,No description,numeric,1,%,SOIL
+SOIL_METADATA,16,soil_source,"Soil profile, source",SL_SOURCE,Source of soil data,No description,text,1,text,SOIL
+SOIL_PROFILE_LAYERS,6,master_horizon,Master horizon [select],SLMH,Master horizon,No description,text,1,code,SOIL
+SOIL_PROFILE_LAYERS,12,soil_clay_fraction,"Clay fraction, <0.002mm (%)",SLCLY,"Soil texture, clay (<0.002 mm), weight percent of fine earth",No description,numeric,1,%,SOIL
+SOIL_PROFILE_LAYERS,12,soil_inert_C,"Organic carbon, inert (g/100g soil)",SLIC,"Inert organic carbon by layer, expressed as g[C]/100g[soil]",No addition,numeric,1,%,SOIL
+SOIL_PROFILE_LAYERS,12,soil_inert_C_fraction,"Organic carbon, inert (fraction of total C)",SLFIC,"Inert organic carbon by layer, fraction of total organic C",No addition,numeric,1,fraction,SOIL
+SOIL_PROFILE_LAYERS,12,soil_stable_C,Stable carbon (g/100g soil),SLSC,"Stable organic carbon by layer, expressed as g[C]/100g[soil]",No description,numeric,1,%,SOIL
+SOIL_PROFILE_LAYERS,12,soil_stable_C_fraction,Stable carbon (fraction of total C),SLFSC,"Stable organic carbon by layer, fraction of total organic C",No description,numeric,1,fraction,SOIL
+SOIL_PROFILE_LAYERS,13,soil_silt_fraction,"Silt fraction, 0.002-0.05mm (%)",SLSIL,"Soil texture, silt (0.05 to 0.002 mm), weight percent of fine earth",No description,numeric,2,%,SOIL
+SOIL_PROFILE_LAYERS,15,soil_coarse_fraction,"Coarse fraction (%), >2mm (%)",SLCF,"Soil texture, coarse fraction (>2 mm), weight percent of fine earth",No description,numeric,1,%,SOIL
+SOIL_PROFILE_LAYERS,16,soil_organic_C_perc_layr,"Organic carbon, total (g/100g soil)",SLOC,"Total soil organic carbon by layer, expressed as g[C]/100g[soil]",No addition,numeric,2,%,SOIL
+SOIL_PROFILE_LAYERS,18,soil_pH_in_water,pH water,SLPHW,"pH of soil in water, from profile description",pH 7.4,numeric,2,number,SOIL
+SOIL_PROFILE_LAYERS,19,soil_bulk_density_moist,"Bulk density, moist (g/cm3)",SLBDM,Soil bulk density with volume determined when soil is moist (approx. 33 kPa = 1/3 bar),No description,numeric,2,g/cm3,SOIL
+SOIL_PROFILE_LAYERS,22,soil_water_air_dry,"Water content, air dry (cm3/cm3)",SLADR,"Soil water content, air dry",No description,numeric,2,cm3/cm3,SOIL
+SOIL_PROFILE_LAYERS,22,soil_water_lower_limit,"Water content, lower limit (cm3/cm3)",SLLL,"Soil water, lower limit",No description,numeric,2,cm3/cm3,SOIL
+SOIL_PROFILE_LAYERS,23,soil_water_wilting_pt,"Water content, wilting point 15 atm (cm3/cm3)",SLWP,Soil water content (wilting point) at 15 atmosphere pressure ,No description,numeric,1,cm3/cm3,SOIL
+SOIL_PROFILE_LAYERS,24,soil_water_field_cap_1,"Water content, 0.33 atm (cm3/cm3)",SLFC1,Soil water content at 1/3 atmosphere pressure,No description,numeric,1,cm3/cm3,SOIL
+SOIL_PROFILE_LAYERS,25,soil_water_field_cap_2,"Water content, 0.10 atm (cm3/cm3)",SLFC2,Soil water content at 1/10 atmospheric pressure,No description,numeric,1,cm3/cm3,SOIL
+SOIL_PROFILE_LAYERS,26,soil_wat_drned_upper_lim,"Water, drained upper limit (cm3/cm3)",SLDUL,"Soil water, drained upper limit",No description,numeric,2,cm3/cm3,SOIL
+SOIL_PROFILE_LAYERS,27,soil_water_saturated,"Water, saturated (cm3/cm3)",SLSAT,"Soil water, saturated",No description,numeric,2,cm3/cm3,SOIL
+SOIL_PROFILE_LAYERS,28,sat_hydraul_conductivity,Saturated hydraulic conductivity (cm/h),SKSAT,Saturated hydraulic conductivity,No description,numeric,1,cm/h,SOIL
+SOIL_PROFILE_LAYERS,32,cation_exchange_capacity,Cation exchange capacity (cmol/kg),SLCEC,Cation exchange capacity,No description,numeric,1,cmol/kg,SOIL
+SOIL_PROFILE_LAYERS,33,soil_organic_N_conc,"Organic N concentration, total (%)",SLORN,"Nitrogen, total soil organic",No description,numeric,1,%,SOIL
+SOIL_PROFILE_LAYERS,37,root_growth_factor_soil,Root growth factor [0-1],SLRGF,"Root growth factor, soil only (0 to 1 scale)",No description,numeric,1,number,SOIL
+SOIL_PROFILES,3,soil_classific_system,Soil classification system,SL_SYSTEM,"Soil classification system (e.g., FAO, USDA)",No description,text,1,text,SOIL
+SOIL_PROFILES,4,soil_classification,Soil classification,CLASSIFICATION,Soil classification,Clayey Flevopolder Soil,text,1,text,SOIL
+SOIL_PROFILES,13,soil_albedo_moist,"Albedo, moist soil",SALBM,"Soil albedo, moist soil",No description,numeric,2,unitless,SOIL
+SOIL_PROFILES,16,runoff_curve_no_SCS,Runoff curve number (SCS),SLRO,Runoff curve no. (Soil Conservation Service),No description,integer,2,number,SOIL
+SOIL_PROFILES,17,soil_surface_color,"Surface colour, Munsell hue",SSCOL,"Surface soil color, moist, using Munsell hue",No description,text,1,code,SOIL
+SUITE_METADATA,6,suite_institute_name,,SUITE_INSTITUTION,Names of participating institutions,"Research Station for Arable Farming and Field Production of Vegetables, Edelhertweg 1, Lelystad, the Netherlands",text,1,text,METADATA
+SUITE_METADATA,17,suite_persons_notes,,SUITE_PERSON_NOTES,Additional notes on persons involved with the experiment(s),No note,text,1,text,METADATA
+WEATHER_DAILY,4,maximum_temperature,"Air temperature, maximum (°C)",TMAX,"Temperature of air, daily maximum",Only average temperature for each month,numeric,2,degree_C,WEATHER
+WEATHER_DAILY,5,minimum_temperature,"Air temperature, minimum (°C)",TMIN,"Temperature of air, daily minimum",Only average temperature for each month,numeric,2,degree_C,WEATHER
+WEATHER_DAILY,12,temperature_dewpoint,Dewpoint temperature (°C),TDEW,"Temperature, dewpoint",Only average temperature for each month,numeric,1,degree_C,WEATHER
+WEATHER_DAILY,13,precipitation,Rainfall (mm),RAIN,"Rainfall, including moisture in snow, in one day",Contained average rainfall for each month,numeric,2,mm,WEATHER
+WEATHER_DAILY,14,solar_radiation,Solar radiation (MJ/m2/d),SRAD,Solar radiation,Contained average solar radiation for each month,numeric,2,MJ/(m2.d),WEATHER
+WEATHER_DAILY,18,ozone_daily_max,"Ozone concentration, daily maximum",OZONX,Daily maximum ozone concentration,No description,numeric,1,ppb,WEATHER
+WEATHER_DAILY,25,wind_speed_daily,Wind speed (km/d),WIND,"Wind speed, daily",No description,numeric,1,km/d,WEATHER
+WEATHER_METADATA,-99,temp_amplit_month_avg,,TAMP,Temperature amplitude (peak to trough) of 12 monthly averages,Only average temperature for each month,numeric,2,degree_C,WEATHER
+WEATHER_METADATA,14,ref_height_weather_meas,Weather station reference height (m),REFHT,Reference height for weather measurement,No description,numeric,2,m,WEATHER
