@@ -1,0 +1,36 @@
+# Group 1: Development Workflow (dev branch)
+git checkout dev        # Switch to the 'dev' branch for development
+git pull origin dev     # Pull the latest updates from the remote 'dev' branch
+
+# Make changes to your files locally
+git add .               # Stage all changed files (or specify files individually)
+git commit -m "Update or feature description"  # Commit your changes
+git push origin dev     # Push the changes to the remote 'dev' branch
+
+# Group 2: Merging Updates to the Stable Branch (main branch)
+git checkout main       # Switch to the 'main' branch
+git pull origin main    # Pull the latest updates from the remote 'main' branch
+git merge dev           # Merge the 'dev' branch into the 'main' branch
+git push origin main    # Push the updated 'main' branch to the remote repository
+
+# Group 3: Synchronizing the Test Branch (test branch)
+git checkout test       # Switch to the 'test' branch
+git pull origin test    # Pull the latest updates from the remote 'test' branch
+git merge main          # Merge the 'main' branch into the 'test' branch
+git push origin test    # Push the updated 'test' branch to the remote repository
+
+# Group 4: Resolving Merge Conflicts (if any)
+# When encountering a conflict during merging:
+# Inspect the conflicting file (e.g., template_icasa_vba.xlsm)
+# Decide whether to keep the modified file or delete it:
+rm template_icasa_vba.xlsm  # Remove the conflicting file if not needed
+git add template_icasa_vba.xlsm  # Stage the resolved file or deletion
+git commit -m "Resolved conflict for template_icasa_vba.xlsm"  # Commit the resolution
+git push origin test      # Push the resolved 'test' branch to the remote repository
+
+# Group 5: Ignoring Files with .gitignore
+# Edit the .gitignore file to add the specific file to be ignored
+echo "template_icasa_vba.xlsm" >> .gitignore  # Add the file to .gitignore
+git rm --cached template_icasa_vba.xlsm       # Stop tracking the file while keeping it locally
+git commit -m "Update .gitignore to exclude template_icasa_vba.xlsm"  # Commit the change
+git push origin <branch_name>                 # Push the updated branch

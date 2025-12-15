@@ -10,7 +10,7 @@ Sub TestVLookup()
     colName = "durat_summarization_per"
     
     On Error Resume Next
-    colLabel = Application.WorksheetFunction.VLookup(colName, dictSheet.Range("C2:D" & dictSheet.Cells(dictSheet.Rows.Count, "C").End(xlUp).row), 2, False)
+    colLabel = Application.WorksheetFunction.VLookup(colName, dictSheet.Range("C2:D" & dictSheet.Cells(dictSheet.Rows.Count, "C").End(xlUp).Row), 2, False)
     On Error GoTo 0
     
     Debug.Print "Column Name: " & colName & " | Lookup Result: " & colLabel

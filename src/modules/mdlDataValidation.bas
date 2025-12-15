@@ -11,21 +11,31 @@ Function GetValidationDictionaryFromSheet(dictSheet As Worksheet, targetSheet As
     Set dict = CreateObject("Scripting.Dictionary")
 
     ' Get the last row with data in the "Dictionary" sheet
-    lastRow = dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).row
+    lastRow = dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).Row
 
     ' Find the header row (assuming headers are in the first row)
     Set headerRow = dictSheet.Rows(1)
     
-    ' Find column numbers for the required fields
-    colVariableName = headerRow.Find(What:="var_name", LookIn:=xlValues, LookAt:=xlWhole).Column
-    colValidationList = headerRow.Find(What:="validation_list", LookIn:=xlValues, LookAt:=xlWhole).Column
-    colValidationType = headerRow.Find(What:="validation_type", LookIn:=xlValues, LookAt:=xlWhole).Column
-    colFormatType = headerRow.Find(What:="format", LookIn:=xlValues, LookAt:=xlWhole).Column
-    colVarOrder = headerRow.Find(What:="var_order_custom", LookIn:=xlValues, LookAt:=xlWhole).Column
-    colSheetName = headerRow.Find(What:="sheet", LookIn:=xlValues, LookAt:=xlWhole).Column
+    ' Define lookup columns
+    On Error Resume Next
+    colVariableName = Application.Match("var_name", headerRow, 0)
+    colValidationList = Application.Match("validation_list", headerRow, 0)
+    colValidationType = Application.Match("validation_type", headerRow, 0)
+    colFormatType = Application.Match("format", headerRow, 0)
+    colVarOrder = Application.Match("var_order", headerRow, 0)
+    colSheetName = Application.Match("sheet", headerRow, 0)
+    colColType = Application.Match("column_type", headerRow, 0)
+    On Error GoTo 0
+
+    ' Check if all columns were found
+    If colVariableName = 0 Or colValidationList = 0 Or colValidationType = 0 Or colFormatType = 0 Or colVarOrder = 0 Or colSheetName = 0 Or colColType = 0 Then
+        MsgBox "Could not find one or more required columns in the 'Dictionary' sheet. Check: var_name, validation_list, validation_type, format, var_order, sheet, column_type", vbCritical, "Missing Columns"
+        Set GetValidationDictionaryFromSheet = dict ' Return empty dictionary
+        Exit Function
+    End If
 
     ' Loop through the rows to read data
-    For i = 2 To lastRow ' Assuming data starts in the second row
+    For i = 2 To lastRow ' Data starts in the second row
         targetSheetName = CStr(dictSheet.Cells(i, colSheetName).Value)
         
         ' Apply the target sheet filter
@@ -37,10 +47,11 @@ Function GetValidationDictionaryFromSheet(dictSheet As Worksheet, targetSheet As
                 validationType = CStr(dictSheet.Cells(i, colValidationType).Value)
                 formatType = CStr(dictSheet.Cells(i, colFormatType).Value)
                 varOrder = dictSheet.Cells(i, colVarOrder).Value
+                colType = CStr(dictSheet.Cells(i, colColType).Value)
                 
                 ' Check if the key already exists
                 If Not dict.exists(key) Then
-                    dict.Add key, Array(validationList, validationType, formatType, varOrder)
+                    dict.Add key, Array(validationList, validationType, formatType, varOrder, colType)
                 Else
                     Debug.Print "Duplicate key found and skipped: " & key
                 End If
@@ -70,10 +81,61 @@ Sub DisplayValidationDictionary()
     Next key
 End Sub
 
+'Sub ApplyDataValidation(tbl As ListObject, headerName As String, validationRangeName As String, validationType As String, dropDownSheet As Worksheet)
+'    Dim colIndex As Integer
+'    Dim dataRange As Range
+'    Dim validationRange As Range
+'
+'    ' Find the column index by header name
+'    colIndex = GetColumnIndexByHeader(tbl, headerName)
+'
+'    ' Check if the column was found
+'    If colIndex > 0 Then
+'        ' Define the range for data validation based on the column index
+'        Set dataRange = tbl.ListColumns(colIndex).DataBodyRange
+'        ' Get the validation range using its name
+'
+'        On Error Resume Next
+'        Set validationRange = dropDownSheet.Range(validationRangeName)
+'        If validationRange Is Nothing Then
+'            MsgBox "Named range '" & validationRangeName & "' does not exist on sheet '" & dropDownSheet.Name & "'.", vbCritical
+'            Exit Sub
+'        End If
+'        On Error GoTo 0
+'
+'
+'        'Set validationRange = dropDownSheet.Range(validationRangeName)
+'        ' Apply data validation
+'        If validationType = "list_strict" Then
+'            With dataRange.Validation
+'                .Delete
+'                .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:= _
+'                    xlBetween, Formula1:="=" & dropDownSheet.Name & "!" & validationRange.Address  ' Only values from the list
+'                .IgnoreBlank = True
+'                .InCellDropdown = True
+'                .ShowInput = True
+'                .ShowError = True
+'            End With
+'        ElseIf validationType = "list_flexible" Then
+'            With dataRange.Validation
+'                .Delete
+'                .Add Type:=xlValidateList, AlertStyle:=xlValidAlertInformation, Operator:= _
+'                    xlBetween, Formula1:="=" & dropDownSheet.Name & "!" & validationRange.Address  ' Allows other values
+'                .IgnoreBlank = True
+'                .InCellDropdown = True
+'                .ShowInput = True
+'                .ShowError = False
+'            End With
+'        Else
+'            dataRange.Validation.Delete
+'        End If
+'    End If
+'End Sub
+
 Sub ApplyDataValidation(tbl As ListObject, headerName As String, validationRangeName As String, validationType As String, dropDownSheet As Worksheet)
     Dim colIndex As Integer
     Dim dataRange As Range
-    Dim validationRange As Range
+    ' Dim validationRange As Range ' This is no longer needed
     
     ' Find the column index by header name
     colIndex = GetColumnIndexByHeader(tbl, headerName)
@@ -82,24 +144,27 @@ Sub ApplyDataValidation(tbl As ListObject, headerName As String, validationRange
     If colIndex > 0 Then
         ' Define the range for data validation based on the column index
         Set dataRange = tbl.ListColumns(colIndex).DataBodyRange
-        ' Get the validation range using its name
         
+        ' --- NEW: Check if the Named Range exists anywhere in the workbook ---
+        Dim nm As Name
         On Error Resume Next
-        Set validationRange = dropDownSheet.Range(validationRangeName)
-        If validationRange Is Nothing Then
-            MsgBox "Named range '" & validationRangeName & "' does not exist on sheet '" & dropDownSheet.Name & "'.", vbCritical
-            Exit Sub
-        End If
+        Set nm = ThisWorkbook.Names(validationRangeName)
         On Error GoTo 0
         
+        If nm Is Nothing Then
+            MsgBox "Data validation setup failed for column '" & headerName & "'." & vbCrLf & vbCrLf & _
+                   "The Named Range '" & validationRangeName & "' does not exist.", vbCritical, "Missing Named Range"
+            Exit Sub
+        End If
+        ' --- END NEW CHECK ---
         
-        'Set validationRange = dropDownSheet.Range(validationRangeName)
         ' Apply data validation
         If validationType = "list_strict" Then
             With dataRange.Validation
                 .Delete
+                ' --- MODIFIED: Use the Named Range string directly ---
                 .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:= _
-                    xlBetween, Formula1:="=" & dropDownSheet.Name & "!" & validationRange.Address  ' Only values from the list
+                    xlBetween, Formula1:="=" & validationRangeName
                 .IgnoreBlank = True
                 .InCellDropdown = True
                 .ShowInput = True
@@ -108,8 +173,9 @@ Sub ApplyDataValidation(tbl As ListObject, headerName As String, validationRange
         ElseIf validationType = "list_flexible" Then
             With dataRange.Validation
                 .Delete
+                ' --- MODIFIED: Use the Named Range string directly ---
                 .Add Type:=xlValidateList, AlertStyle:=xlValidAlertInformation, Operator:= _
-                    xlBetween, Formula1:="=" & dropDownSheet.Name & "!" & validationRange.Address  ' Allows other values
+                    xlBetween, Formula1:="=" & validationRangeName
                 .IgnoreBlank = True
                 .InCellDropdown = True
                 .ShowInput = True
@@ -165,83 +231,8 @@ Sub ApplyColumnFormats(tbl As ListObject, dict As Object)
     Next col
 End Sub
 
-
-'Sub SetUpDataValidation(targetSheet As Worksheet)
-'    Dim ws As Worksheet
-'    Dim dropDownSheet As Worksheet
-'    Dim tbl As ListObject
-'    Dim dictSheet As Worksheet
-'    Dim dict As Object
-'    Dim col As ListColumn
-'    Dim headerName As String
-'    Dim cell As Range
-'    Dim score As String
-'    Dim validationInfo As Variant
-'    Dim validationRangeName As String
-'    Dim validationType As String
-'    Dim formatType As String
-'
-'    ' Define the worksheets and table
-'    Set ws = ActiveSheet
-'    Set dropDownSheet = ThisWorkbook.Sheets("DropDown")
-'
-'    If ws.ListObjects.Count > 0 Then
-'        Set tbl = ws.ListObjects(1)
-'    Else
-'        MsgBox "No tables found in the active sheet.", vbExclamation
-'        Exit Sub
-'    End If
-'
-'    Set dictSheet = ThisWorkbook.Sheets("Dictionary")
-'
-'    ' Get the dictionary of header names and validation ranges from the sheet
-'    Set dict = GetValidationDictionaryFromSheet(dictSheet, targetSheet)
-'
-'    ' Loop through all columns in the table and apply data validation
-'    For Each col In tbl.ListColumns
-'        headerName = col.Name
-'        If dict.exists(headerName) Then
-'            ' Retrieve the validation information
-'            validationInfo = dict(headerName)
-'            ' Assign the array elements to individual variables
-'            validationRangeName = validationInfo(0) '<-- First element (validation range name)
-'            validationType = validationInfo(1)     '<-- Second element (validation type)
-'            formatType = validationInfo(2)         '<-- Third element (format type)
-'
-'            ' Apply data validation
-'            If validationRangeName = "none" Then
-'                ' Explicitly clear validation for columns with "none"
-'                col.DataBodyRange.Validation.Delete
-'            Else
-'                ' Apply data validation
-'                ApplyDataValidation tbl, headerName, validationRangeName, validationType, dropDownSheet
-'            End If
-'
-'    ' Apply column formats
-'    ApplyColumnFormats tbl, dict
-'
-'        Else
-'            Set cell = dictSheet.Range("C1").EntireColumn.Find(headerName)
-'            If Not cell Is Nothing Then
-'                score = cell.Offset(0, dictSheet.Rows(1).Find("score").Column - cell.Column).Value
-'                If score <> "S" Then
-'                    ' Column not found in the dictionary AND not an ID, set data validation to "Any value"
-'                    With col.DataBodyRange.Validation
-'                        .Delete ' Remove existing validation
-'                        .Add Type:=xlValidateInputOnly, AlertStyle:=xlValidAlertStop
-'                        .IgnoreBlank = True
-'                        .InCellDropdown = False
-'                        .ShowInput = True
-'                        .ShowError = True
-'                    End With
-'                End If
-'            End If
-'        End If
-'    Next col
-'End Sub
-
-
 Sub SetUpDataValidation(targetSheet As Worksheet)
+    
     Dim ws As Worksheet
     Dim dropDownSheet As Worksheet
     Dim tbl As ListObject
@@ -249,15 +240,14 @@ Sub SetUpDataValidation(targetSheet As Worksheet)
     Dim dict As Object
     Dim col As ListColumn
     Dim headerName As String
-    Dim cell As Range
-    Dim score As String
+    Dim colType As String
     Dim validationInfo As Variant
     Dim validationRangeName As String
     Dim validationType As String
     Dim formatType As String
     
     ' Define the worksheets and table
-    Set ws = ActiveSheet
+    Set ws = targetSheet
     Set dropDownSheet = ThisWorkbook.Sheets("DropDown")
     
     If ws.ListObjects.Count > 0 Then
@@ -272,6 +262,11 @@ Sub SetUpDataValidation(targetSheet As Worksheet)
     ' Get the dictionary of header names and validation ranges from the sheet
     Set dict = GetValidationDictionaryFromSheet(dictSheet, targetSheet)
     
+    If dict.Count = 0 Then
+        Debug.Print "Validation dictionary is empty for sheet: " & targetSheet.Name
+        ' Decide if you want to exit or continue and clear formats/validation
+    End If
+    
     ' Loop through all columns in the table and apply data validation
     For Each col In tbl.ListColumns
         headerName = col.Name
@@ -281,32 +276,26 @@ Sub SetUpDataValidation(targetSheet As Worksheet)
             ' Retrieve the validation information
             validationInfo = dict(headerName)
             validationRangeName = validationInfo(0) '<-- First element (validation range name)
-            validationType = validationInfo(1)     '<-- Second element (validation type)
-            formatType = validationInfo(2)         '<-- Third element (format type)
+            validationType = validationInfo(1)      '<-- Second element (validation type)
+            formatType = validationInfo(2)          '<-- Third element (format type)
+            ' validationInfo(3) is varOrder
+            colType = validationInfo(4)             '<-- Fifth element (column type)
             
-            ' Check if column is a structural variable (score = "S")
-            Set cell = dictSheet.Range("C1").EntireColumn.Find(headerName)
-            If Not cell Is Nothing Then
-                score = cell.Offset(0, dictSheet.Rows(1).Find("score").Column - cell.Column).Value
-                If score = "S" Then
-                    ' Structural variable: Skip modification of validation
-                    Debug.Print "Skipping validation changes for structural variable: " & headerName
-                    ApplyColumnFormats tbl, dict
-                    GoTo NextColumn
-                End If
+            ' ####
+            If colType = "fixed" Then
+                ' Structural variable: Skip modification of validation
+                Debug.Print "Skipping validation changes for structural variable: " & headerName
+                GoTo NextColumn ' Skip to the next column
             End If
             
             ' Handle data validation for non-structural variables
-            If validationRangeName = "none" Then
-                ' Explicitly clear validation for columns with "none"
+            If validationRangeName = "none" Or validationRangeName = "" Then
+                ' Explicitly clear validation for columns with "none" or empty
                 col.DataBodyRange.Validation.Delete
             Else
                 ' Apply data validation
                 ApplyDataValidation tbl, headerName, validationRangeName, validationType, dropDownSheet
             End If
-            
-            ' Apply column formats
-            ApplyColumnFormats tbl, dict
             
         Else
             ' Handle columns not found in the dictionary
@@ -316,5 +305,9 @@ Sub SetUpDataValidation(targetSheet As Worksheet)
         
 NextColumn:
     Next col
+    
+    ' Apply formats to the entire table after all validation is set
+    ApplyColumnFormats tbl, dict
+
 End Sub
 

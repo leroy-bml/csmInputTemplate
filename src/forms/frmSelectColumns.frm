@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSelectColumns 
    Caption         =   "Select columns"
-   ClientHeight    =   7180
-   ClientLeft      =   -490
-   ClientTop       =   -1930
-   ClientWidth     =   5220
+   ClientHeight    =   7185
+   ClientLeft      =   -440
+   ClientTop       =   -1710
+   ClientWidth     =   7840
    OleObjectBlob   =   "frmSelectColumns.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -35,7 +35,25 @@ Private Sub PopulateControls()
     ' Populate checkboxes dynamically with column options from the dictionary
     Dim dictSheet As Worksheet
     Set dictSheet = ThisWorkbook.Sheets("Dictionary")
+    
+    ' Find column indices by name
+    Dim colVarOrder As Long, colVarName As Long, colVarLabel As Long, colColType As Long
+    Dim dictHeader As Range
+    Set dictHeader = dictSheet.Rows(1)
 
+    On Error Resume Next ' Temporarily suppress errors
+    colVarOrder = Application.Match("var_order", dictHeader, 0)
+    colVarName = Application.Match("var_name", dictHeader, 0)
+    colVarLabel = Application.Match("var_label_en", dictHeader, 0)
+    colColType = Application.Match("column_type", dictHeader, 0)
+    On Error GoTo 0 ' Resume normal error handling
+
+    ' ERROR HANDLING: missing columns in dictionary
+    If colVarOrder = 0 Or colVarName = 0 Or colVarLabel = 0 Or colColType = 0 Then
+        MsgBox "Could not find one or more required columns in the 'Dictionary' sheet: var_order, var_name, var_label_en, column_type.", vbCritical, "Missing Columns"
+        Exit Sub
+    End If
+    
     Dim cell As Range
     Dim topPos As Integer
     Dim chkBox As MSForms.CheckBox
@@ -44,8 +62,7 @@ Private Sub PopulateControls()
     Dim currentSection As String
     Dim maxWidth As Integer
     Dim tbl As ListObject
-    Dim score As String
-    Dim scoreCell As Range
+    Dim colType As String
 
     ' Determine the current sheet name
     currentSection = Application.ActiveSheet.Name
@@ -81,23 +98,34 @@ Private Sub PopulateControls()
     ' Get the table from the current sheet
     Set tbl = ThisWorkbook.Sheets(currentSection).ListObjects(1)
 
+    ' Loop using column indices
+    Dim varOrderValue As Variant
+    Dim varNameValue As String
+    
     ' Create checkboxes for the appropriate section
-    For Each cell In dictSheet.Range("A2:A" & dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).row)
-        'If cell.Value = currentSection And Not (cell.Offset(0, 2).Value Like "*_ID*" Or cell.Offset(0, 2).Value Like "*_lev*" Or cell.Offset(0, 2).Value Like "*_identifier*" Or cell.Offset(0, 2).Value Like "*_name") Then
-        If cell.Value = currentSection And cell.Offset(0, 1) <> -99 Then
-            Set scoreCell = cell.Offset(0, dictSheet.Rows(1).Find("score").Column - cell.Column)
-            score = scoreCell.Value
-            If score <> "S" Then
-                Set chkBox = Frame.Controls.Add("Forms.CheckBox.1", "chk" & cell.Offset(0, 2).Value, True)
+    ' Loop through Column A (sheet name column)
+    For Each cell In dictSheet.Range("A2:A" & dictSheet.Cells(dictSheet.Rows.Count, "A").End(xlUp).Row)
+        
+        ' Get the value from the "var_order" column for the current row
+        varOrderValue = dictSheet.Cells(cell.Row, colVarOrder).Value
+        ' Filter by section (Column A) and var_order
+        If cell.Value = currentSection And Not varOrderValue = -99 And Not varOrderValue = -1 Then
+            ' Get column type from the "column_type" column
+            colType = dictSheet.Cells(cell.Row, colColType).Value
+            If colType <> "fixed" Then
+                ' Get variable name from "var_name" column
+                varNameValue = dictSheet.Cells(cell.Row, colVarName).Value
+                Set chkBox = Frame.Controls.Add("Forms.CheckBox.1", "chk" & varNameValue, True)
                 With chkBox
-                    .Caption = cell.Offset(0, 3).Value
+                    ' Get variable label from "var_label_en" column
+                    .Caption = dictSheet.Cells(cell.Row, colVarLabel).Value
                     .Top = topPos
                     .Left = 10
                     .AutoSize = False
                     .Width = maxWidth ' Set width to use more frame space
                     .WordWrap = False ' Prevent text from wrapping unnecessarily
                     ' Set initial state based on whether column exists in the table
-                    If ColumnExistsInTable(tbl, cell.Offset(0, 2).Value) Then
+                    If ColumnExistsInTable(tbl, varNameValue) Then
                         .Value = True
                     Else
                         .Value = False
@@ -109,6 +137,7 @@ Private Sub PopulateControls()
     Next cell
 
     ' Calculate the required height based on the number of checkboxes
+    Dim requiredHeight As Long
     requiredHeight = topPos + 20
 
     ' Adjust the Frame ScrollHeight to fit all checkboxes and add space at the bottom
@@ -155,7 +184,7 @@ Private Sub btnUpdate_Click()
     Dim currentSection As String
     currentSection = Application.ActiveSheet.Name
 
-    Call UpdateTable(currentSection)
+    Call UpdateTable(currentSection, Me)
 
     Unload Me
 End Sub

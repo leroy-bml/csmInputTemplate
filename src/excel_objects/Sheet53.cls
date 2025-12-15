@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "Sheet55"
+Attribute VB_Name = "Sheet53"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -18,7 +18,7 @@ Private Sub Worksheet_Change(ByVal Target As Range)
     ' Set the worksheet and table
     On Error GoTo ErrorHandler
     Set ws = Me
-    Set tbl = ws.ListObjects("envData")
+    Set tbl = ws.ListObjects("plantData")
 
     ' Create a dictionary for tracking unique combinations
     Set uniqueCombinations = CreateObject("Scripting.Dictionary")

@@ -8,6 +8,16 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Private Sub Worksheet_Change(ByVal Target As Range)
+
+    ' Check if the change was in the table
+    If Me.ListObjects.Count > 0 Then
+        If Not Intersect(Target, Me.ListObjects(1).DataBodyRange) Is Nothing Then
+            ' Schedule the ID update to run AFTER the Workbook_Change event
+            Application.OnTime Now, "UpdateSheetIDs"
+        End If
+    End If
+
+
     Dim lookupValue As String
     Dim autofillValue As Variant
     Dim validationRange As Range
@@ -29,7 +39,7 @@ Private Sub Worksheet_Change(ByVal Target As Range)
             ' Perform a lookup in the validation range (ddl_envmodifParameter)
             On Error Resume Next ' Handle errors if no match is found
             autofillValue = Application.VLookup(lookupValue, _
-                Application.Union(validationRange, correspondingUnits), 2, False)
+                Application.Union(validationRange, correspondingUnits), 3, False)
             On Error GoTo 0
             
             ' Populate column 7 with the corresponding unit if found
