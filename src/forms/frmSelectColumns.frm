@@ -2,9 +2,9 @@ VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSelectColumns 
    Caption         =   "Select columns"
    ClientHeight    =   7185
-   ClientLeft      =   -440
+   ClientLeft      =   -435
    ClientTop       =   -1710
-   ClientWidth     =   7840
+   ClientWidth     =   7830
    OleObjectBlob   =   "frmSelectColumns.frx":0000
    StartUpPosition =   1  'CenterOwner
 End

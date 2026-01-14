@@ -26,7 +26,7 @@ Public Sub UpdateSheetIDs()
         Case "plotLayout": idName = "plot_layout_id"
         Case "treatments": idName = "treatment_number"
         Case "plots": idName = "plot_id"
-        Case "growingSeason": idName = "crop_season_id"
+        Case "cropSeason": idName = "crop_season_id"
         Case "plotSetup": idName = "plot_setup_id"
         Case "genotypes": idName = "genotype_level"
         Case "cropResidues": idName = "initial_conditions_level"
@@ -48,6 +48,7 @@ Public Sub UpdateSheetIDs()
 '        Case "soilAnalysesLayers": idName = "soil_analysis_layers_id"  'xxx
         Case "environModifications": idName = "environmental_modif_lev"
         Case "environModifLevels": idName = "environmental_modif_levels_id"
+        Case "managements": idName = "management_id"
         
         ' Weather data
         Case "weatherDaily": idName = "weather_daily_record_id"

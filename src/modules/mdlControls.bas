@@ -1,31 +1,47 @@
 Attribute VB_Name = "mdlControls"
 Sub GoToFirstSheet()
-    ' Activate the first sheet in the workbook
-    ThisWorkbook.Sheets(1).Activate
+
+    ' ThisWorkbook.Sheets(1).Activate
+    Sheets("Menu").Visible = xlSheetVisible
+    Sheets("Menu").Activate
 End Sub
 
 Sub GoToNextSheet()
 
-    Dim currentSheet As Worksheet
-    Set currentSheet = ActiveSheet
+    Dim ws As Worksheet
+    Dim found As Boolean
 
-    If currentSheet.Index < ThisWorkbook.Sheets.Count Then
-        ThisWorkbook.Sheets(currentSheet.Index + 1).Activate
-    Else
-        MsgBox "This is the last sheet in the workbook.", vbInformation
-    End If
+    For Each ws In ThisWorkbook.Worksheets
+        If ws.Visible = xlSheetVisible Then
+            If ws.Index > ActiveSheet.Index Then
+                ws.Activate
+                found = True
+                Exit For
+            End If
+        End If
+    Next ws
+
+    If Not found Then MsgBox "No next visible sheet found.", vbInformation
 End Sub
 
 Sub GoToPreviousSheet()
 
     Dim currentSheet As Worksheet
+    Dim i As Long
+    Dim found As Boolean
+
     Set currentSheet = ActiveSheet
 
-    If currentSheet.Index > 1 Then
-        ThisWorkbook.Sheets(currentSheet.Index - 1).Activate
-    Else
-        MsgBox "This is the first sheet in the workbook.", vbInformation
-    End If
+    ' Check sheets in reverse order (from current-1 down to 1)
+    For i = currentSheet.Index - 1 To 1 Step -1
+        If ThisWorkbook.Sheets(i).Visible = xlSheetVisible Then
+            ThisWorkbook.Sheets(i).Activate
+            found = True
+            Exit Sub
+        End If
+    Next i
+
+    If Not found Then MsgBox "No previous visible sheet found.", vbInformation
 End Sub
 
 Sub BulkResizeColumns()
@@ -223,14 +239,14 @@ Sub GoToParentSheet()
     Set wsCurrent = ActiveSheet
 
     ' Get the first 5 characters of the current sheet name
-    prefix = Left(wsCurrent.Name, 5)
+    prefix = Left(wsCurrent.Name, 4)
 
     ' Search for a sheet that starts with the same prefix
     found = False
     For Each wsParent In ThisWorkbook.Worksheets
         ' Skip the current sheet and check if name starts with prefix
         If wsParent.Name <> wsCurrent.Name And _
-           Left(wsParent.Name, 5) = prefix Then
+           Left(wsParent.Name, 4) = prefix Then
             found = True
             Exit For
         End If
